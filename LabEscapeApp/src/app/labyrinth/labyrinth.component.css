@@ -4,7 +4,7 @@ td {
 }
 
 .Wall {
-    background-color: rgb(206, 124, 24);
+    background-color: rgb(190, 134, 65);
 }
 
 .Start {
@@ -16,7 +16,7 @@ td {
 }
 
 .Space {
-    background-color: rgb(160, 156, 156);
+    background-color: rgb(187, 183, 183);
 }
 
 .current-position {

@@ -8,13 +8,14 @@ import {Game, Cell, MoveDirection, MoveResult} from './Game';
   styleUrls: ['./labyrinth.component.css']
 })
 export class LabyrinthComponent implements OnInit {
-
+  firstLoad: boolean = true;
   public game?: Game;
   public size: number = 20;
   public Cell = Cell;
   public moveLog: string[] = [];
   public playingSound: boolean = false;
-  stepSound: HTMLAudioElement = new Audio("../assets/Step.mp3");
+  newCellStepSound: HTMLAudioElement = new Audio("../assets/FirstStep.mp3");
+  visitedCellStepSound: HTMLAudioElement = new Audio("../assets/VisitedStep.mp3");
   wallSound: HTMLAudioElement = new Audio("../assets/Wall.mp3");
 
   constructor() {
@@ -52,8 +53,10 @@ export class LabyrinthComponent implements OnInit {
         if (result == MoveResult.Exit) {
           this.say("Congratulations! You won");
           this.newGame();
-        } else if (result == MoveResult.Success) {
-          this.playSound(this.stepSound);
+        } else if (result == MoveResult.NewCell) {
+          this.playSound(this.newCellStepSound);
+        } else if (result == MoveResult.VisitedCell) {
+          this.playSound(this.visitedCellStepSound);
         } else {
           this.playSound(this.wallSound);
         }
@@ -61,7 +64,9 @@ export class LabyrinthComponent implements OnInit {
   }
 
   newGame() {
-    this.say("New Game");
+    if (!this.firstLoad) {
+      this.say("New Game");
+    }
     this.game = new Game(this.size);
     this.moveLog = [];
   }

@@ -17,7 +17,7 @@ export class LabyrinthComponent implements OnInit {
   newCellStepSound: HTMLAudioElement = new Audio("../assets/FirstStep.mp3");
   visitedCellStepSound: HTMLAudioElement = new Audio("../assets/VisitedStep.mp3");
   wallSound: HTMLAudioElement = new Audio("../assets/Wall.mp3");
-  intro: string = "Welcome to labyrinth escape. Move using arrow or w, a, s or d keys. Press space for new game.";
+  intro: string = "Welcome to labyrinth escape. You can move using arrow keys or w, a, s and d keys. Press space for new game.";
 
   constructor() {
   }

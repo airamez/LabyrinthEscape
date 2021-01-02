@@ -6,10 +6,10 @@ export enum Cell {
 }
 
 export enum MoveDirection {
-    RIGHT = 'Right',
-    LEFT = 'Left',
-    UP = 'Up',
-    DOWN = 'Down'
+    Right,
+    Left,
+    Up,
+    Down
 }
 
 export enum MoveResult {
@@ -56,13 +56,13 @@ export class Game {
     public move(key: MoveDirection) : MoveResult {
         let result: MoveResult = MoveResult.Success;
         let nextPosition: Position = new Position(this.currentPosition.row, this.currentPosition.column);
-        if (key == MoveDirection.UP) {
+        if (key == MoveDirection.Up) {
             nextPosition.row--;
-        } else if (key == MoveDirection.DOWN) {
+        } else if (key == MoveDirection.Down) {
             nextPosition.row++;
-        } else if (key == MoveDirection.LEFT) {
+        } else if (key == MoveDirection.Left) {
             nextPosition.column--;
-        } else if (key == MoveDirection.RIGHT) {
+        } else if (key == MoveDirection.Right) {
             nextPosition.column++;
         }
         if (nextPosition.row < 0 || nextPosition.row >= this.size ||

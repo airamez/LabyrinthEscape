@@ -1,5 +1,6 @@
+<h1>Labyrinth Escape</h1>
 <p-button label="New Game" (click)="newGame()"></p-button>
-<table>
+<table *ngIf='game'>
     <tr>
         <td style="width: 80%;">
             <table>
@@ -12,10 +13,6 @@
                         </ng-template>
                         <ng-template #notCurrentPosition>
                             <td [className]='col'></td>
-                            <!-- <td class='start' *ngIf = 'col == Cell.Start'></td>
-                            <td class='exit' *ngIf = 'col == Cell.Exit'></td>
-                            <td class='space' *ngIf = 'col == Cell.Space'></td>
-                            <td class="wall" *ngIf = 'col == Cell.Wall'></td> -->
                         </ng-template>
                     </ng-container>
                 </tr>

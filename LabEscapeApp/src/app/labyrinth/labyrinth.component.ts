@@ -23,21 +23,31 @@ export class LabyrinthComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.newGame();
-  }
-  @HostListener('mousemove', ['$event'])
-  mouseEvent(event: MouseEvent) {
-    if (this.firstLoad) {
-      this.say(this.intro);
-      this.firstLoad = false;
-    }
   }
 
+  @HostListener('window:mousedown', ['$event'])
+  mouseDownEvent(event: MouseEvent) {
+    console.log('mousedown');
+    if (this.firstLoad) {
+      this.firstLoad = false;
+      this.say(this.intro)
+        .then(() => {
+          this.playingSound = false;
+          this.newGame();
+        });
+    }
+  }
+ 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
+    console.log('keyup');
     if (this.firstLoad) {
-      this.say(this.intro);
       this.firstLoad = false;
+      this.say(this.intro)
+        .then(() => {
+          this.playingSound = false;
+          this.newGame();
+        });
       return;
     }
     if (!this.game) {
@@ -68,42 +78,55 @@ export class LabyrinthComponent implements OnInit {
         let result: MoveResult = this.game.move(move);
         this.moveLog.unshift(`${MoveDirection[move]} : ${MoveResult[result]}`);
         if (result == MoveResult.Exit) {
-          this.say("Congratulations! You won");
-          this.newGame();
-        } else if (result == MoveResult.NewCell) {
-          this.playSound(this.newCellStepSound);
-        } else if (result == MoveResult.VisitedCell) {
-          this.playSound(this.visitedCellStepSound);
+          this.say("Congratulations! You won")
+          .then(() => {
+            this.playingSound = false;
+            this.newGame();
+          });
         } else {
-          this.playSound(this.wallSound);
-        }
+          let soundToPlay: HTMLAudioElement = this.wallSound;
+          if (result == MoveResult.NewCell) {
+            soundToPlay = this.newCellStepSound;
+          } else if (result == MoveResult.VisitedCell) {
+            soundToPlay = this.visitedCellStepSound;
+          }
+          this.playSound(soundToPlay)
+          .then(() => {
+            this.playingSound = false;
+          });
+        } 
     }
   }
 
   newGame() {
     if (!this.firstLoad) {
-      this.say("New Game");
+      this.say("New Game")
+      .then(() => {
+        this.playingSound = false;
+        this.game = new Game(this.size);
+        this.moveLog = [];
+      });
     }
-    this.game = new Game(this.size);
-    this.moveLog = [];
   }
 
-  playSound(sound: HTMLAudioElement) {
+  playSound(sound: HTMLAudioElement) : Promise<any>{
     this.playingSound = true;
-    sound.play();
     var _this = this;
-    sound.onended = function() {
-      _this.playingSound = false;
-    };
+    return new Promise(function (resolve, reject) {
+      sound.play();
+      sound.onerror = reject;
+      sound.onended = resolve;
+    });
   }
 
-  say(message: string) {
+  say(message: string) : Promise<any>{
     this.playingSound = true;
-    let audio = new SpeechSynthesisUtterance(message);
-    window.speechSynthesis.speak(audio);
     var _this = this;
-    audio.onend = function(event){
-      _this.playingSound = false;
-    }
+    return new Promise(function (resolve, reject) {
+      let audio = new SpeechSynthesisUtterance(message);
+      window.speechSynthesis.speak(audio);
+      audio.onerror = reject;
+      audio.onend = resolve;
+    });
   }
 }

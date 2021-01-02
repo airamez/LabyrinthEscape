@@ -27,6 +27,11 @@ export class LabyrinthComponent implements OnInit {
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
+    if (this.firstLoad) {
+      this.say("Welcome to labyrinth escape. Move using arrow keys or w, a, s or d keys");
+      this.firstLoad = false;
+      return;
+    }
     if (!this.game) {
       return;
     }

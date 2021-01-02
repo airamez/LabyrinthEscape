@@ -5,7 +5,7 @@ This project is about a labyrinth game for people with visual disability.
 https://dreamy-kare-ff703c.netlify.app/
 
 ## Hosted at
-https://app.netlify.com/sites
+https://app.netlify.com
 
 ## TODO list
 * Make sure there is a solution

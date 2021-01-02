@@ -1,0 +1,30 @@
+<p-button label="New Game" (click)="newGame()"></p-button>
+<table>
+    <tr>
+        <td style="width: 80%;">
+            <table>
+                <tr *ngFor='let row of game.labyrinth; let i = index'>
+                    <ng-container *ngFor='let col of game.labyrinth[i]; let j = index'>
+                        <ng-container *ngIf = '(i == game.currentPosition.row && j == game.currentPosition.column); then currentPosition; else notCurrentPosition'>
+                        </ng-container>
+                        <ng-template #currentPosition>
+                            <td class="current-position"></td>
+                        </ng-template>
+                        <ng-template #notCurrentPosition>
+                            <td [className]='col'></td>
+                            <!-- <td class='start' *ngIf = 'col == Cell.Start'></td>
+                            <td class='exit' *ngIf = 'col == Cell.Exit'></td>
+                            <td class='space' *ngIf = 'col == Cell.Space'></td>
+                            <td class="wall" *ngIf = 'col == Cell.Wall'></td> -->
+                        </ng-template>
+                    </ng-container>
+                </tr>
+            </table>
+        </td>
+        <td style="vertical-align:top">
+            <div style="overflow-y: scroll; height:600px;">
+                <p *ngFor='let entry of moveLog' style='margin: 0;'>{{entry}}</p>
+            </div>
+        </td>
+    </tr>
+</table>

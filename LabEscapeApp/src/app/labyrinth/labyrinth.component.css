@@ -1,0 +1,24 @@
+td {
+    height: 30px;
+    width: 30px;
+}
+
+.Wall {
+    background-color: rgb(206, 124, 24);
+}
+
+.Start {
+    background-color: green;
+}
+
+.Exit {
+    background-color: dodgerblue;
+}
+
+.Space {
+    background-color: rgb(160, 156, 156);
+}
+
+.current-position {
+    background-color:black
+}

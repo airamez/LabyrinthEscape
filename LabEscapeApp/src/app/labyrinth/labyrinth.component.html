@@ -1,28 +1,71 @@
 <h1>Labyrinth Escape</h1>
-<p-button label="New Game" (click)="newGame()"></p-button>
-<table *ngIf='game'>
+<table>
     <tr>
-        <td style="width: 80%;">
-            <table>
-                <tr *ngFor='let row of game.labyrinth; let i = index'>
-                    <ng-container *ngFor='let col of game.labyrinth[i]; let j = index'>
-                        <ng-container *ngIf = '(i == game.currentPosition.row && j == game.currentPosition.column); then currentPosition; else notCurrentPosition'>
-                        </ng-container>
-                        <ng-template #currentPosition>
-                            <td class="current-position"></td>
-                        </ng-template>
-                        <ng-template #notCurrentPosition>
-                            <td [className]='col'></td>
-                        </ng-template>
-                    </ng-container>
-                </tr>
-            </table>
+        <td style="width: 10%;">
+            <p-button label="New Game" (click)="newGame()"></p-button>
         </td>
-        <td style="vertical-align:top">
-            <h3>Actions Log</h3>
-            <div style="overflow-y: scroll; height:600px;">
-                <p *ngFor='let entry of moveLog' style='margin: 0;'>{{entry}}</p>
-            </div>
+        <td>
+            <table>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button pButton pRipple type="button" icon="pi pi-chevron-up" class="p-button-rounded p-button-outlined"
+                                    (click)="moveUp()">
+                        </button>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                        <button pButton pRipple type="button" icon="pi pi-chevron-left" class="p-button-rounded p-button-outlined"
+                                (click)="moveLeft()">
+                        </button>
+                    </td>
+                    <td></td>
+                    <td>
+                        <button pButton pRipple type="button" icon="pi pi-chevron-right" class="p-button-rounded p-button-outlined"
+                                (click)="moveRight()">
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button pButton pRipple type="button" icon="pi pi-chevron-down" class="p-button-rounded p-button-outlined"
+                                (click)="moveDown()">
+                        </button>
+                    </td>
+                    <td></td>
+                </tr>
+                </table>
         </td>
     </tr>
 </table>
+<div *ngIf='game'>
+    <table>
+        <tr>
+            <td style="width: 80%;">
+                <table>
+                    <tr *ngFor='let row of game.labyrinth; let i = index'>
+                        <ng-container *ngFor='let col of game.labyrinth[i]; let j = index'>
+                            <ng-container *ngIf = '(i == game.currentPosition.row && j == game.currentPosition.column); then currentPosition; else notCurrentPosition'>
+                            </ng-container>
+                            <ng-template #currentPosition>
+                                <td class="current-position"></td>
+                            </ng-template>
+                            <ng-template #notCurrentPosition>
+                                <td [className]='col'></td>
+                            </ng-template>
+                        </ng-container>
+                    </tr>
+                </table>
+            </td>
+            <td style="vertical-align:top">
+                <h3>Actions Log</h3>
+                <div style="overflow-y: scroll; height:600px;">
+                    <p *ngFor='let entry of moveLog' style='margin: 0;'>{{entry}}</p>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>

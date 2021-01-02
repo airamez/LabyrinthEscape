@@ -18,6 +18,7 @@ export class LabyrinthComponent implements OnInit {
   visitedCellStepSound: HTMLAudioElement = new Audio("../assets/VisitedStep.mp3");
   wallSound: HTMLAudioElement = new Audio("../assets/Wall.mp3");
   intro: string = "Welcome to labyrinth escape. You can move using arrow keys or w, a, s and d keys. Press space for new game.";
+  victoryText: string = "Great, you escaped";
 
   constructor() {
   }
@@ -61,57 +62,64 @@ export class LabyrinthComponent implements OnInit {
       this.newGame();
       return;
     }
-    let move: MoveDirection = MoveDirection.Right;
+    let moveDirection: MoveDirection = MoveDirection.Right;
     if (key === 'arrowright' || key === 'd' ||
         key === 'arrowleft' || key === 'a' ||
         key === 'arrowup' || key === 'w' ||
         key === 'arrowdown' || key === 's') {
         if (key === 'arrowright' || key === 'd') {
-          move = MoveDirection.Right;
+          moveDirection = MoveDirection.Right;
         } else if (key === 'arrowleft' || key === 'a') {
-          move = MoveDirection.Left;
+          moveDirection = MoveDirection.Left;
         } else if (key === "arrowup" || key === 'w') {
-          move = MoveDirection.Up;
-        } else if (key === 'arrowdown' || key === 's') {
-          move = MoveDirection.Down;
-        }
-        let result: MoveResult = this.game.move(move);
-        this.moveLog.unshift(`${MoveDirection[move]} : ${MoveResult[result]}`);
-        if (result == MoveResult.Exit) {
-          this.say("Congratulations! You won")
-          .then(() => {
-            this.playingSound = false;
-            this.newGame();
-          });
+          moveDirection = MoveDirection.Up;
         } else {
-          let soundToPlay: HTMLAudioElement = this.wallSound;
-          if (result == MoveResult.NewCell) {
-            soundToPlay = this.newCellStepSound;
-          } else if (result == MoveResult.VisitedCell) {
-            soundToPlay = this.visitedCellStepSound;
-          }
-          this.playSound(soundToPlay)
-          .then(() => {
-            this.playingSound = false;
-          });
-        } 
+          moveDirection = MoveDirection.Down;
+        }
+        this.move(moveDirection);
+    }
+  }
+
+  move(direction: MoveDirection) {
+    if (this.game) {
+      let result: MoveResult = this.game.move(direction);
+      this.moveLog.unshift(`${MoveDirection[direction]} : ${MoveResult[result]}`);
+      if (result == MoveResult.Exit) {
+        this.say(this.victoryText)
+        .then(() => {
+          this.playingSound = false;
+          this.newGame();
+        });
+      } else {
+        let soundToPlay: HTMLAudioElement = this.wallSound;
+        if (result == MoveResult.NewCell) {
+          soundToPlay = this.newCellStepSound;
+        } else if (result == MoveResult.VisitedCell) {
+          soundToPlay = this.visitedCellStepSound;
+        }
+        this.playSound(soundToPlay)
+        .then(() => {
+          this.playingSound = false;
+        });
+      }
     }
   }
 
   newGame() {
-    if (!this.firstLoad) {
-      this.say("New Game")
-      .then(() => {
-        this.playingSound = false;
-        this.game = new Game(this.size);
-        this.moveLog = [];
-      });
+    if (!this.playingSound) {
+      if (!this.firstLoad) {
+        this.say("New Game")
+        .then(() => {
+          this.playingSound = false;
+          this.game = new Game(this.size);
+          this.moveLog = [];
+        });
+      }
     }
   }
 
   playSound(sound: HTMLAudioElement) : Promise<any>{
     this.playingSound = true;
-    var _this = this;
     return new Promise(function (resolve, reject) {
       sound.play();
       sound.onerror = reject;
@@ -121,12 +129,35 @@ export class LabyrinthComponent implements OnInit {
 
   say(message: string) : Promise<any>{
     this.playingSound = true;
-    var _this = this;
     return new Promise(function (resolve, reject) {
       let audio = new SpeechSynthesisUtterance(message);
       window.speechSynthesis.speak(audio);
       audio.onerror = reject;
       audio.onend = resolve;
     });
+  }
+
+  moveUp() {
+    if (!this.playingSound) {
+      this.move(MoveDirection.Up);
+    }
+  }
+
+  moveLeft() {
+    if (!this.playingSound) {
+      this.move(MoveDirection.Left);
+    }
+  }
+
+  moveRight() {
+    if (!this.playingSound) {
+      this.move(MoveDirection.Right);
+    }
+  }
+
+  moveDown() {
+    if (!this.playingSound) {
+      this.move(MoveDirection.Down);
+    }
   }
 }

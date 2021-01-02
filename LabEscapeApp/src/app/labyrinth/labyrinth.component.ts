@@ -17,6 +17,7 @@ export class LabyrinthComponent implements OnInit {
   newCellStepSound: HTMLAudioElement = new Audio("../assets/FirstStep.mp3");
   visitedCellStepSound: HTMLAudioElement = new Audio("../assets/VisitedStep.mp3");
   wallSound: HTMLAudioElement = new Audio("../assets/Wall.mp3");
+  intro: string = "Welcome to labyrinth escape. Move using arrow or w, a, s or d keys. Press space for new game.";
 
   constructor() {
   }
@@ -24,11 +25,18 @@ export class LabyrinthComponent implements OnInit {
   ngOnInit(): void {
     this.newGame();
   }
+  @HostListener('mousemove', ['$event'])
+  mouseEvent(event: MouseEvent) {
+    if (this.firstLoad) {
+      this.say(this.intro);
+      this.firstLoad = false;
+    }
+  }
 
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (this.firstLoad) {
-      this.say("Welcome to labyrinth escape. Move using arrow keys or w, a, s or d keys");
+      this.say(this.intro);
       this.firstLoad = false;
       return;
     }
@@ -39,6 +47,10 @@ export class LabyrinthComponent implements OnInit {
       return;
     }
     let key: string = event.key.toLowerCase();
+    if (key === ' ') {
+      this.newGame();
+      return;
+    }
     let move: MoveDirection = MoveDirection.Right;
     if (key === 'arrowright' || key === 'd' ||
         key === 'arrowleft' || key === 'a' ||

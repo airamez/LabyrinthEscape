@@ -21,6 +21,7 @@ export class LabyrinthComponent implements OnInit {
   introText: string = "Welcome to labyrinth escape. You can move using arrow keys or w, a, s and d keys. Press space for new game.";
   victoryText: string = "Great, you escaped";
   newGameText: string = "New Game";
+  hardcoreMode: string[] = [];
 
   constructor() {
   }

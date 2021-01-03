@@ -1,7 +1,11 @@
 <h1>Labyrinth Escape</h1>
 <table>
     <tr>
-        <td style="width: 10%;">
+        <td style="vertical-align:top">
+            <p-checkbox [(ngModel)]="hardcoreMode" inputId="hardcode"></p-checkbox>
+            <label> Hardcode mode</label>
+            <br>
+            <br>
             <p-button label="New Game" (click)="newGame()"></p-button>
         </td>
         <td>
@@ -10,7 +14,7 @@
                     <td></td>
                     <td>
                         <button pButton pRipple type="button" icon="pi pi-chevron-up" class="p-button-rounded p-button-outlined"
-                                    (click)="moveUp()">
+                                (click)="moveUp()">
                         </button>
                     </td>
                     <td></td>
@@ -41,7 +45,7 @@
         </td>
     </tr>
 </table>
-<table *ngIf='game' style="vertical-align:top">
+<table *ngIf='game && hardcoreMode.length == 0' style="vertical-align:top">
     <tr *ngFor='let row of game.labyrinth; let i = index'>
         <ng-container *ngFor='let col of game.labyrinth[i]; let j = index'>
             <ng-container *ngIf = '(i == game.currentPosition.row && j == game.currentPosition.column); then currentPosition; else notCurrentPosition'>

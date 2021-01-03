@@ -10,7 +10,7 @@ import {Game, Cell, MoveDirection, MoveResult} from './Game';
 export class LabyrinthComponent implements OnInit {
   firstLoad: boolean = true;
   public game?: Game;
-  private INITIAL_SIZE: number = 5;
+  private INITIAL_SIZE: number = 2;
   public size: number = this.INITIAL_SIZE;
   public Cell = Cell;
   public moveLog: string[] = [];

@@ -58,13 +58,13 @@ export class Game {
         let corners: Position[] = [];
         for (let i = 0; i < this.size; i++) {
             corners.push(new Position(0, i));
-            corners.push(new Position(i, 0));
             corners.push(new Position(this.size - 1, i));
-            corners.push(new Position(i, this.size - 1));
         }
-        let startPos: number = this.getRandom(corners.length);
-        this.labirinthStart = corners[startPos];
-        corners.splice(startPos, 1);
+        for (let i = 1; i < this.size - 1; i++) {
+            corners.push(new Position(i, this.size - 1));
+            corners.push(new Position(i, 0));
+        }
+        this.labirinthStart = corners.splice(this.getRandom(corners.length), 1)[0];
         this.labirinthExit = corners[this.getRandom(corners.length)];
         this.labyrinth[this.labirinthStart.row][this.labirinthStart.column] = Cell.Start;
         this.currentPosition = new Position(this.labirinthStart.row, this.labirinthStart.column);

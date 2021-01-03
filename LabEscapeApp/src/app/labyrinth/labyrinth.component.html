@@ -37,35 +37,21 @@
                     </td>
                     <td></td>
                 </tr>
-                </table>
+            </table>
         </td>
     </tr>
 </table>
-<div *ngIf='game'>
-    <table>
-        <tr>
-            <td style="width: 80%;">
-                <table>
-                    <tr *ngFor='let row of game.labyrinth; let i = index'>
-                        <ng-container *ngFor='let col of game.labyrinth[i]; let j = index'>
-                            <ng-container *ngIf = '(i == game.currentPosition.row && j == game.currentPosition.column); then currentPosition; else notCurrentPosition'>
-                            </ng-container>
-                            <ng-template #currentPosition>
-                                <td class="current-position"></td>
-                            </ng-template>
-                            <ng-template #notCurrentPosition>
-                                <td [className]='col'></td>
-                            </ng-template>
-                        </ng-container>
-                    </tr>
-                </table>
-            </td>
-            <td style="vertical-align:top">
-                <h3>Actions Log</h3>
-                <div style="overflow-y: scroll; height:600px;">
-                    <p *ngFor='let entry of moveLog' style='margin: 0;'>{{entry}}</p>
-                </div>
-            </td>
-        </tr>
-    </table>
-</div>
+<table *ngIf='game' style="vertical-align:top">
+    <tr *ngFor='let row of game.labyrinth; let i = index'>
+        <ng-container *ngFor='let col of game.labyrinth[i]; let j = index'>
+            <ng-container *ngIf = '(i == game.currentPosition.row && j == game.currentPosition.column); then currentPosition; else notCurrentPosition'>
+            </ng-container>
+            <ng-template #currentPosition>
+                <td class="current-position"></td>
+            </ng-template>
+            <ng-template #notCurrentPosition>
+                <td [className]='col'></td>
+            </ng-template>
+        </ng-container>
+    </tr>
+</table>

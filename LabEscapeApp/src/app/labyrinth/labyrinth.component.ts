@@ -10,15 +10,17 @@ import {Game, Cell, MoveDirection, MoveResult} from './Game';
 export class LabyrinthComponent implements OnInit {
   firstLoad: boolean = true;
   public game?: Game;
-  public size: number = 20;
+  private INITIAL_SIZE: number = 5;
+  public size: number = this.INITIAL_SIZE;
   public Cell = Cell;
   public moveLog: string[] = [];
   public playingSound: boolean = false;
   newCellStepSound: HTMLAudioElement = new Audio("../assets/FirstStep.mp3");
   visitedCellStepSound: HTMLAudioElement = new Audio("../assets/VisitedStep.mp3");
   wallSound: HTMLAudioElement = new Audio("../assets/Wall.mp3");
-  intro: string = "Welcome to labyrinth escape. You can move using arrow keys or w, a, s and d keys. Press space for new game.";
-  victory: string = "Great, you escaped";
+  introText: string = "Welcome to labyrinth escape. You can move using arrow keys or w, a, s and d keys. Press space for new game.";
+  victoryText: string = "Great, you escaped";
+  newGameText: string = "New Game";
 
   constructor() {
   }
@@ -31,7 +33,7 @@ export class LabyrinthComponent implements OnInit {
     console.log('mousedown');
     if (this.firstLoad) {
       this.firstLoad = false;
-      this.say(this.intro)
+      this.say(this.introText)
         .then(() => {
           this.playingSound = false;
           this.newGame();
@@ -44,7 +46,7 @@ export class LabyrinthComponent implements OnInit {
     console.log('keyup');
     if (this.firstLoad) {
       this.firstLoad = false;
-      this.say(this.intro)
+      this.say(this.introText)
         .then(() => {
           this.playingSound = false;
           this.newGame();
@@ -83,9 +85,10 @@ export class LabyrinthComponent implements OnInit {
   move(direction: MoveDirection) {
     if (this.game) {
       let result: MoveResult = this.game.move(direction);
-      this.moveLog.unshift(`${MoveDirection[direction]} : ${MoveResult[result]}`);
+      this.moveLog.unshift(`${MoveDirection[direction]}: ${MoveResult[result]}`);
       if (result == MoveResult.Exit) {
-        this.say(this.victory)
+        this.size++;
+        this.say(this.victoryText)
         .then(() => {
           this.playingSound = false;
           this.newGame();
@@ -107,7 +110,7 @@ export class LabyrinthComponent implements OnInit {
 
   newGame() {
     if ((!this.playingSound) && (!this.firstLoad)) {
-      this.say("New Game")
+      this.say(this.newGameText)
       .then(() => {
         this.playingSound = false;
         this.game = new Game(this.size);

@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LabyrinthComponent } from './labyrinth/labyrinth.component';
 import {ButtonModule} from 'primeng/button';
-import {SplitterModule} from 'primeng/splitter';
 
 @NgModule({
   declarations: [
@@ -15,8 +14,7 @@ import {SplitterModule} from 'primeng/splitter';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ButtonModule,
-    SplitterModule
+    ButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

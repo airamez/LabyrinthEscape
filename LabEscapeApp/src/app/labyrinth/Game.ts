@@ -34,6 +34,8 @@ export class Game {
     private visitedCells: boolean[][] = [];
     public currentPosition: Position = new Position (0, 0);
     public size: number = 0;
+    private labirinthStart: Position = new Position (0, 0);
+    private labirinthExit: Position = new Position (0, 0);
 
     constructor(size: number) {
         this.size = size;
@@ -45,16 +47,80 @@ export class Game {
         for (let i = 0; i < this.size; i++) {
             this.labyrinth[i] = Array(this.size);
             for (let j = 0; j < this.size; j++) {
-                this.labyrinth[i][j] = Cell.Space;
-                var rnd = Math.floor(Math.random() * Math.floor(10));
-                if (rnd < 3) {
+                var rnd = this.getRandom(2);
+                if (rnd == 0) {
+                    this.labyrinth[i][j] = Cell.Space;
+                } else {
                     this.labyrinth[i][j] = Cell.Wall;
                 }
             }
         }
-        this.labyrinth[0][0] = Cell.Start;
-        this.visitedCells[0][0] = true;
-        this.labyrinth[this.size - 1][this.size - 1] = Cell.Exit;
+        let corners: Position[] = [];
+        for (let i = 0; i < this.size; i++) {
+            corners.push(new Position(0, i));
+            corners.push(new Position(i, 0));
+            corners.push(new Position(this.size - 1, i));
+            corners.push(new Position(i, this.size - 1));
+        }
+        let startPos: number = this.getRandom(corners.length);
+        this.labirinthStart = corners[startPos];
+        corners.splice(startPos, 1);
+        this.labirinthExit = corners[this.getRandom(corners.length)];
+        this.labyrinth[this.labirinthStart.row][this.labirinthStart.column] = Cell.Start;
+        this.currentPosition = new Position(this.labirinthStart.row, this.labirinthStart.column);
+        this.visitedCells[this.labirinthStart.row][this.labirinthStart.column] = true;
+        this.labyrinth[this.labirinthExit.row][this.labirinthExit.column] = Cell.Exit;
+        this.guaranteSolution();
+    }
+
+    private guaranteSolution() {
+        let current: Position = new Position(this.labirinthStart.row, this.labirinthStart.column);
+        let visited: Position[] = [];
+        let visitingCell: Position = this.getAdjacentPosition(current, visited);
+        let exitFound : boolean = false;
+        while (visitingCell.column != -1) {
+            exitFound = visitingCell.row == this.labirinthExit.row &&
+                        visitingCell.column == this.labirinthExit.column;
+            if (exitFound) {
+                break;
+            }
+            visited.push(visitingCell);
+            visitingCell = this.getAdjacentPosition(visitingCell, visited);
+        }
+        if (!exitFound) {
+            this.guaranteSolution();
+        } else {
+            visited.forEach(c => {
+                this.labyrinth[c.row][c.column] = Cell.Space;
+            });
+        }
+    }
+
+    getAdjacentPosition(cell: Position, visited: Position[]) : Position {
+        let candidateToAdjacents: Position[] = [];
+        candidateToAdjacents.push(new Position(cell.row - 1, cell.column));
+        candidateToAdjacents.push(new Position(cell.row + 1, cell.column));
+        candidateToAdjacents.push(new Position(cell.row, cell.column - 1));
+        candidateToAdjacents.push(new Position(cell.row, cell.column + 1));
+        let adjacents: Position[] = [];
+        for (let i = candidateToAdjacents.length - 1; i >= 0; i--) {
+            let adjacent: Position = candidateToAdjacents[i];
+            if (adjacent.row >= 0 && adjacent.column >= 0 &&
+                adjacent.row < this.size && adjacent.column < this.size) {
+                if (visited.findIndex(c => c.row == adjacent.row && c.column == adjacent.column) == -1) {
+                    adjacents.push(adjacent);
+                }
+            }
+        }
+        if (adjacents.length == 0) {
+            return new Position(-1, -1);
+        } else {
+            return adjacents[this.getRandom(adjacents.length)];
+        }
+    }
+
+    private getRandom(range: number) : number {
+       return Math.floor(Math.random() * Math.floor(range));
     }
 
     private initializeVisited() {

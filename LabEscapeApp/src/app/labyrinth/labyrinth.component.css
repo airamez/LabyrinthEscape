@@ -1,24 +1,32 @@
-td {
+/* td {
+} */
+
+.Wall {
+    background-color: rgb(190, 134, 65);
     height: 30px;
     width: 30px;
 }
 
-.Wall {
-    background-color: rgb(190, 134, 65);
-}
-
 .Start {
     background-color: green;
+    height: 30px;
+    width: 30px;
 }
 
 .Exit {
     background-color: dodgerblue;
+    height: 30px;
+    width: 30px;
 }
 
 .Space {
     background-color: rgb(187, 183, 183);
+    height: 30px;
+    width: 30px;
 }
 
 .current-position {
-    background-color:black
+    background-color:black;
+    height: 30px;
+    width: 30px;
 }

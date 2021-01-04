@@ -43,7 +43,11 @@ export class Game {
         this.generate();
     }
 
+    /**
+     * Generate the Lab
+     */
     public generate() {
+        // Set all cells randomly (50%) as Space or Wall
         for (let i = 0; i < this.size; i++) {
             this.labyrinth[i] = Array(this.size);
             for (let j = 0; j < this.size; j++) {
@@ -55,61 +59,93 @@ export class Game {
                 }
             }
         }
-        let corners: Position[] = [];
-        for (let i = 0; i < this.size; i++) {
-            corners.push(new Position(0, i));
-            corners.push(new Position(this.size - 1, i));
-        }
-        for (let i = 1; i < this.size - 1; i++) {
-            corners.push(new Position(i, this.size - 1));
-            corners.push(new Position(i, 0));
-        }
-        this.labirinthStart = corners.splice(this.getRandom(corners.length), 1)[0];
-        this.labirinthExit = corners[this.getRandom(corners.length)];
+        this.setStartAndExit();
         this.labyrinth[this.labirinthStart.row][this.labirinthStart.column] = Cell.Start;
         this.currentPosition = new Position(this.labirinthStart.row, this.labirinthStart.column);
         this.visitedCells[this.labirinthStart.row][this.labirinthStart.column] = true;
         this.labyrinth[this.labirinthExit.row][this.labirinthExit.column] = Cell.Exit;
-        this.guaranteSolution();
+        this.forceSolution();
     }
 
-    private guaranteSolution() {
+    /**
+     * Set the Start and Exit position randomly as one of the border position
+     */
+    setStartAndExit() {
+        // List of all border positions
+        let borderCells: Position[] = [];
+        // Adding elements from horizontal border: first and last rows
+        for (let i = 0; i < this.size; i++) {
+            borderCells.push(new Position(0, i));
+            borderCells.push(new Position(this.size - 1, i));
+        }
+        // Adding elements from verical border: fist and last columns
+        // Skips the first and last elements as they were added already
+        for (let i = 1; i < this.size - 1; i++) {
+            borderCells.push(new Position(i, this.size - 1));
+            borderCells.push(new Position(i, 0));
+        }
+        // Set the start and remove the position from the borderCells making sure exit
+        // will be a different position
+        this.labirinthStart = borderCells.splice(this.getRandom(borderCells.length), 1)[0];
+        this.labirinthExit = borderCells[this.getRandom(borderCells.length)];
+    }
+
+    /**
+     * Make sure there is at list one valid path from Start to Exit
+     * The idea is to generate a random path from Start to Exit
+     * and set the position as spaces
+     */
+    private forceSolution() {
         let current: Position = new Position(this.labirinthStart.row, this.labirinthStart.column);
-        let visited: Position[] = [];
-        let visitingCell: Position = this.getAdjacentPosition(current, visited);
+        let solutionCells: Position[] = [];
+        let visitingCell: Position = this.getAdjacentPosition(current, solutionCells);
         let exitFound : boolean = false;
         while (visitingCell.column != -1) {
-            exitFound = visitingCell.row == this.labirinthExit.row &&
-                        visitingCell.column == this.labirinthExit.column;
+            exitFound = this.isSamePosition(visitingCell, this.labirinthExit);
             if (exitFound) {
                 break;
             }
-            visited.push(visitingCell);
-            visitingCell = this.getAdjacentPosition(visitingCell, visited);
+            solutionCells.push(visitingCell);
+            visitingCell = this.getAdjacentPosition(visitingCell, solutionCells);
         }
         if (!exitFound) {
-            this.guaranteSolution();
+            // No exit found, trying again
+            this.forceSolution();
         } else {
-            visited.forEach(c => {
+            // Setting all cells from the possible solution as spaces
+            solutionCells.forEach(c => {
                 this.labyrinth[c.row][c.column] = Cell.Space;
             });
         }
     }
 
-    getAdjacentPosition(cell: Position, visited: Position[]) : Position {
-        let candidateToAdjacents: Position[] = [];
-        candidateToAdjacents.push(new Position(cell.row - 1, cell.column));
-        candidateToAdjacents.push(new Position(cell.row + 1, cell.column));
-        candidateToAdjacents.push(new Position(cell.row, cell.column - 1));
-        candidateToAdjacents.push(new Position(cell.row, cell.column + 1));
+    isSamePosition(pos1: Position, pos2: Position) : boolean {
+        return pos1.row == pos2.row &&
+               pos1.column == pos2.column;
+    }
+
+    getAdjacents(cell: Position) : Position[] {
         let adjacents: Position[] = [];
-        for (let i = candidateToAdjacents.length - 1; i >= 0; i--) {
-            let adjacent: Position = candidateToAdjacents[i];
-            if (adjacent.row >= 0 && adjacent.column >= 0 &&
-                adjacent.row < this.size && adjacent.column < this.size) {
-                if (visited.findIndex(c => c.row == adjacent.row && c.column == adjacent.column) == -1) {
-                    adjacents.push(adjacent);
-                }
+        adjacents.push(new Position(cell.row - 1, cell.column));
+        adjacents.push(new Position(cell.row + 1, cell.column));
+        adjacents.push(new Position(cell.row, cell.column - 1));
+        adjacents.push(new Position(cell.row, cell.column + 1));
+        for (let i = adjacents.length - 1; i >= 0; i--) {
+            let adjacent: Position = adjacents[i];
+            if (adjacent.row < 0 || adjacent.column < 0 ||
+                adjacent.row >= this.size || adjacent.column >= this.size)
+            {
+                adjacents.splice(i, 1);
+            }
+        }
+        return adjacents;
+    }
+
+    getAdjacentPosition(cell: Position, visited: Position[]) : Position {
+        let adjacents: Position[] = this.getAdjacents(cell);
+        for (let i = adjacents.length - 1; i >= 0; i--) {
+            if (this.existsInArray(visited, adjacents[i])) {
+                adjacents.splice(i, 1);
             }
         }
         if (adjacents.length == 0) {
@@ -117,6 +153,10 @@ export class Game {
         } else {
             return adjacents[this.getRandom(adjacents.length)];
         }
+    }
+
+    private existsInArray (array : Position[], position: Position) : boolean {
+        return array.findIndex(c => c.row == position.row && c.column == position.column) != -1;
     }
 
     private getRandom(range: number) : number {

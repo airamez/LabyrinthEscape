@@ -65,6 +65,11 @@ export class LabyrinthComponent implements OnInit {
       this.newGame();
       return;
     }
+    if (key === '|') {
+      this.size++;
+      this.newGame();
+      return;
+    }
     let moveDirection: MoveDirection = MoveDirection.Right;
     if (key === 'arrowright' || key === 'd' ||
         key === 'arrowleft' || key === 'a' ||

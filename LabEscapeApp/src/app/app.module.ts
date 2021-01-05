@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { LabyrinthComponent } from './labyrinth/labyrinth.component';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { CheckboxModule } from 'primeng/checkbox';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     ButtonModule,
-    CheckboxModule
+    CheckboxModule,
+    DropdownModule
   ],
   providers: [],
   bootstrap: [AppComponent]

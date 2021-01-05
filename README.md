@@ -8,6 +8,5 @@ https://labyrinthescape.netlify.app/
 [![Netlify Status](https://api.netlify.com/api/v1/badges/31c0c224-4826-494e-8c6b-d16b0d6dd501/deploy-status)](https://app.netlify.com/sites/labyrinthescape/deploys)
 
 ## TODO list
-* Improve the labyrinth generation
 * Use a game engine :P
 * Add doors, keys, monsters and weapons (A little bit of adventure)

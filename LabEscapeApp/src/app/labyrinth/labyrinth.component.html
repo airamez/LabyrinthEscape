@@ -1,51 +1,43 @@
-<h1>Labyrinth Escape</h1>
+<p-button label="New Game" (click)="newGame()"></p-button>
+&nbsp;
+<p-dropdown [options]="gameModes" [(ngModel)]="selectedGameMode" optionLabel="name" (onChange)="onGameModeChange();"></p-dropdown>
+&nbsp;
+<span>{{selectedGameMode.tooltip}}</span>
 <table>
     <tr>
-        <td style="vertical-align:top">
-            <p-checkbox [(ngModel)]="hardcoreMode" inputId="hardcode"></p-checkbox>
-            <label> Hardcode mode</label>
-            <br>
-            <br>
-            <p-button label="New Game" (click)="newGame()"></p-button>
-        </td>
+        <td></td>
         <td>
-            <table>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button pButton pRipple type="button" icon="pi pi-chevron-up" class="p-button-rounded p-button-outlined"
-                                (click)="moveUp()">
-                        </button>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>
-                        <button pButton pRipple type="button" icon="pi pi-chevron-left" class="p-button-rounded p-button-outlined"
-                                (click)="moveLeft()">
-                        </button>
-                    </td>
-                    <td></td>
-                    <td>
-                        <button pButton pRipple type="button" icon="pi pi-chevron-right" class="p-button-rounded p-button-outlined"
-                                (click)="moveRight()">
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button pButton pRipple type="button" icon="pi pi-chevron-down" class="p-button-rounded p-button-outlined"
-                                (click)="moveDown()">
-                        </button>
-                    </td>
-                    <td></td>
-                </tr>
-            </table>
+            <button pButton pRipple type="button" icon="pi pi-chevron-up" class="p-button-rounded p-button-outlined"
+                    (click)="moveUp()">
+            </button>
+        </td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>
+            <button pButton pRipple type="button" icon="pi pi-chevron-left" class="p-button-rounded p-button-outlined"
+                    (click)="moveLeft()">
+            </button>
+        </td>
+        <td></td>
+        <td>
+            <button pButton pRipple type="button" icon="pi pi-chevron-right" class="p-button-rounded p-button-outlined"
+                    (click)="moveRight()">
+            </button>
         </td>
     </tr>
+    <tr>
+        <td></td>
+        <td>
+            <button pButton pRipple type="button" icon="pi pi-chevron-down" class="p-button-rounded p-button-outlined"
+                    (click)="moveDown()">
+            </button>
+        </td>
+        <td></td>
+    </tr>
 </table>
-<table *ngIf='game && hardcoreMode.length == 0' style="vertical-align:top">
+
+<table *ngIf='game && showLabyrinth' style="vertical-align:top">
     <tr *ngFor='let row of game.labyrinth; let i = index'>
         <ng-container *ngFor='let col of game.labyrinth[i]; let j = index'>
             <ng-container *ngIf = '(i == game.currentPosition.row && j == game.currentPosition.column); then currentPosition; else notCurrentPosition'>

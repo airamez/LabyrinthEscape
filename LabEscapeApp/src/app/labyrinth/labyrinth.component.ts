@@ -21,17 +21,24 @@ export class LabyrinthComponent implements OnInit {
   introText: string = "Welcome to Labyrinth Escape. You can move using arrow keys or W, A, S or D keys. Space starts a new game.";
   victoryText: string = "Great, you escaped";
   newGameText: string = "New Game";
-  hardcoreMode: string[] = [];
+  gameModes: any[] = [];
+  selectedGameMode: any;
+  showLabyrinth: boolean = true;
 
   constructor() {
   }
 
   ngOnInit(): void {
+    this.gameModes = [
+      {name: 'Easy', code: 'Easy', tooltip: 'The Labyrinth is always visible.'},
+      {name: 'Normal', code: 'Normal', tooltip: 'The Labyrinth is invisible after the first move.'},
+      {name: 'Hardcore', code: 'Hardcore', tooltip: 'The Labyrinth is always invisible.'}
+    ];
+    this.selectedGameMode = this.gameModes[0];
   }
 
   @HostListener('window:mousedown', ['$event'])
   mouseDownEvent(event: MouseEvent) {
-    console.log('mousedown');
     if (this.firstLoad) {
       this.firstLoad = false;
       this.say(this.introText)
@@ -44,7 +51,6 @@ export class LabyrinthComponent implements OnInit {
  
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    console.log('keyup');
     if (this.firstLoad) {
       this.firstLoad = false;
       this.say(this.introText)
@@ -89,11 +95,15 @@ export class LabyrinthComponent implements OnInit {
   }
 
   move(direction: MoveDirection) {
+    this.showLabyrinth = this.selectedGameMode.code === 'Easy';
     if (this.game) {
       let result: MoveResult = this.game.move(direction);
       this.moveLog.unshift(`${MoveDirection[direction]}: ${MoveResult[result]}`);
       if (result == MoveResult.Exit) {
         this.size++;
+        if (this.selectedGameMode.code === 'Normal') {
+          this.showLabyrinth = true;
+        }
         this.say(this.victoryText)
         .then(() => {
           this.playingSound = false;
@@ -166,5 +176,10 @@ export class LabyrinthComponent implements OnInit {
     if (!this.playingSound) {
       this.move(MoveDirection.Down);
     }
+  }
+
+  onGameModeChange() {
+    this.showLabyrinth = (this.selectedGameMode.code === 'Easy' || 
+                          this.selectedGameMode.code === 'Normal');
   }
 }

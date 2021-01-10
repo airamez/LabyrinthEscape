@@ -19,8 +19,8 @@ export class LabyrinthComponent implements OnInit {
   visitedCellStepSound: HTMLAudioElement = new Audio("../assets/VisitedStep.mp3");
   wallSound: HTMLAudioElement = new Audio("../assets/Wall.mp3");
   introText: string = "Welcome to Labyrinth Escape. You can move using arrow keys or W, A, S or D keys. Space starts a new game.";
-  victoryText: string = "Great, you escaped";
-  newGameText: string = "New Game";
+  victoryText: string = "Great, you escaped.";
+  newGameText: string = "New Game!";
   gameModes: any[] = [];
   selectedGameMode: any;
   showLabyrinth: boolean = true;
@@ -125,8 +125,9 @@ export class LabyrinthComponent implements OnInit {
   }
 
   newGame() {
+    let msg = this.newGameText + `Labyrinth size is ${this.size}`;
     if ((!this.playingSound) && (!this.firstLoad)) {
-      this.say(this.newGameText)
+      this.say(msg)
       .then(() => {
         this.playingSound = false;
         this.game = new Game(this.size);
